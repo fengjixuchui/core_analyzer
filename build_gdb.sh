@@ -14,12 +14,13 @@
 
 set -e
 gdb_version="12.1"
-if [ "$#" -ne 1 ]
+if [ "$#" -lt 1 ]
 then
     echo "build gdb 12.1"
 else
     gdb_version=$1
 fi
+REMOVE_BUILD=$2 # be able to remove the build folder by passing an extra argument.
 
 PROJECT_FOLDER=$(pwd)
 echo "Current project folder is $PROJECT_FOLDER"
@@ -50,4 +51,9 @@ PWD=$(pwd)
 
 $PWD/../configure --with-python --prefix=/usr
 make -j 8 && sudo make install # do not remove the build folder && rm -rf $build_folder
-echo "if you want to remove the build folder, please run \"rm -rf $build_folder\""
+if [ -z "$REMOVE_BUILD" ]
+then
+    echo "if you want to remove the build folder, please run \"rm -rf $build_folder\""
+else
+    rm -rf $build_folder
+fi
